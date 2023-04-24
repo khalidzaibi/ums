@@ -17,7 +17,7 @@ Class UserProfile extends CI_Controller {
 
 
 		public function updateProfile(){
-			$profile = 'default.png';
+			$profile = '';
 			$this->form_validation->set_rules('first_name','First Name','required|alpha');
 			$this->form_validation->set_rules('last_name','Last  Name','required|alpha');
 			$this->form_validation->set_rules('phone','Phone','required|numeric|exact_length[10]');
@@ -33,15 +33,16 @@ Class UserProfile extends CI_Controller {
 							}else{
 									$profileData = $this->upload->data();
 									$profile =$profileData['file_name'];
+									$this->session->set_userdata('profile',$profile);
 							}
 					}
-					$this->session->set_userdata('profile',$profile);
 					$data = array(
 						'first_name'=>$this->input->post('first_name'),
 						'last_name'=>$this->input->post('last_name'),
 						'phone'=>$this->input->post('phone'),
 						'profile'=>$profile,
 					);
+					if(!$profile) unset($data['profile']);
 					$updated = $this->ProfileModel->updateUserProfile($data);
 					if($updated){
 						$this->session->set_flashdata('success','Profile updated successfully!');
